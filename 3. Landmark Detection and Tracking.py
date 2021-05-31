@@ -514,8 +514,6 @@ poses, landmarks = get_poses_landmarks(mu_2, 20)
 print_all(poses, landmarks)
 
 
-# In[ ]:
-
 
 
 
