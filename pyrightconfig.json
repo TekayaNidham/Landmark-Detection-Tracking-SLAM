@@ -1,0 +1,14 @@
+{
+  "pythonVersion": "3.12",
+  "include": [
+    "src",
+    "tests",
+    "benchmark_robust_slam.py",
+    "community_eval.py",
+    "slam_robust.py"
+  ],
+  "extraPaths": [
+    "src",
+    "C:/Users/Nidham/miniconda3/Lib/site-packages"
+  ]
+}
