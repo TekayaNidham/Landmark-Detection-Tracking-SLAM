@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "landmark-slam"
+version = "0.1.0"
+description = "Robust 2D GraphSLAM library with benchmarks and community evaluation"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE.md" }
+authors = [{ name = "Landmark SLAM Contributors" }]
+dependencies = [
+  "numpy>=1.24",
+  "matplotlib>=3.7",
+  "seaborn>=0.12",
+]
+
+[project.optional-dependencies]
+dev = []
+
+[project.scripts]
+landmark-slam = "landmark_slam.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
