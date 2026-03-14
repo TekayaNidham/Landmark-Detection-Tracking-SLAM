@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-03-14T16:57:21.818347+00:00",
+  "config": {
+    "trials": 4,
+    "n_steps": 25,
+    "num_landmarks": 8,
+    "world_size": 100.0,
+    "measurement_range": 45.0,
+    "motion_noise": 2.0,
+    "measurement_noise": 2.0,
+    "distance": 12.0,
+    "outlier_scale": 25.0,
+    "outlier_rates": [
+      0.0,
+      0.2
+    ]
+  },
+  "series": [
+    {
+      "pose_baseline_mean": 0.9507778207096993,
+      "pose_baseline_std": 0.19077938416022483,
+      "pose_robust_mean": 0.977494652634903,
+      "pose_robust_std": 0.187042971684362,
+      "landmark_baseline_mean": 16.977660042826844,
+      "landmark_baseline_std": 16.5673256500343,
+      "landmark_robust_mean": 16.992383580772355,
+      "landmark_robust_std": 16.553524125678486,
+      "outlier_rate": 0.0,
+      "pose_gain_pct": -2.8099973877452418
+    },
+    {
+      "pose_baseline_mean": 5.233489810927461,
+      "pose_baseline_std": 2.641910804188294,
+      "pose_robust_mean": 1.0896189362723563,
+      "pose_robust_std": 0.29446402033600627,
+      "landmark_baseline_mean": 18.139183853345255,
+      "landmark_baseline_std": 15.96948113114919,
+      "landmark_robust_mean": 20.05439506602515,
+      "landmark_robust_std": 19.03826257265859,
+      "outlier_rate": 0.2,
+      "pose_gain_pct": 79.17987852011777
+    }
+  ]
+}
