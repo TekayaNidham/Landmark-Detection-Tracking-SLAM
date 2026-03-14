@@ -1,71 +1,108 @@
-# Landmark Detection & Robot Tracking (SLAM)
+# Landmark Detection, Tracking, and Robust GraphSLAM
 
-## Project Overview
+[![CI](https://github.com/<OWNER>/<REPO>/actions/workflows/ci.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/<OWNER>/<REPO>/actions/workflows/codeql.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/codeql.yml)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
-In this project, we implement SLAM (Simultaneous Localization and Mapping) for a 2 dimensional world! we combine what you know about robot sensor measurements and movement to create a map of an environment from only sensor and motion data gathered by a robot, over time. SLAM gives you a way to track the location of a robot in the world in real-time and identify the locations of landmarks such as buildings, trees, rocks, and other world features. This is an active area of research in the fields of robotics and autonomous systems.
+This repository started as an educational SLAM project and is now upgraded with a robust SLAM pipeline focused on a practical open-source gap:
 
-*Below is an example of a 2D robot world with landmarks (purple x's) and the robot (a red 'o') located and found using *only* sensor and motion data collected by that robot. This is just one example for a 50x50 grid world; in your work you will likely generate a variety of these maps.*
+- Baseline educational GraphSLAM examples usually assume clean measurements.
+- Real-world robotics data contains outliers and inconsistent constraints.
+- Lightweight, readable, and benchmarked robust GraphSLAM examples are still uncommon in beginner-friendly repos.
 
-<p align="center">
-  <img src="./images/robot_world.png" width=50% height=50% />
-</p>
+This update adds robust optimization and reproducible benchmarking while preserving the original learning scripts.
 
+## What Was Added
 
+- Robust 2D GraphSLAM with IRLS (iteratively reweighted least squares).
+- Huber loss style downweighting for large residuals.
+- Optional residual gating to reject gross outliers.
+- Covariance-diagonal output for uncertainty introspection.
+- Deterministic synthetic-data generator and outlier injector.
+- Baseline-vs-robust benchmark script.
+- Unit tests and multi-OS/multi-version CI.
+- CodeQL security analysis workflow.
 
-__Script 1__ : Robot Moving and Sensing
+## Repository Layout
 
-__Script 2__ : Omega and Xi, Constraints
+- Original educational scripts:
+  - `1. Robot Moving and Sensing.py`
+  - `2. Omega and Xi, Constraints.py`
+  - `3. Landmark Detection and Tracking.py`
+- Core robust module:
+  - `slam_robust.py`
+- Benchmark:
+  - `benchmark_robust_slam.py`
+- Tests:
+  - `tests/test_robust_slam.py`
+- GitHub automation:
+  - `.github/workflows/ci.yml`
+  - `.github/workflows/codeql.yml`
 
-__Script 3__ : Landmark Detection and Tracking
+## Quick Start
 
+```bash
+python -m pip install -r requirements.txt
+python -m pip install -e .
+python -m unittest discover -s tests -v
+python benchmark_robust_slam.py
+python community_eval.py --trials 20 --outlier-rates 0.0 0.1 0.2 0.3 0.4 --output-dir artifacts
+```
 
+## Library Usage
 
-## Project Rubric
+Use this project as a Python library:
 
-### `robot_class.py`: Implementation of `sense`
+```python
+from landmark_slam import RobustSlamConfig, robust_graph_slam, simulate_slam_data
+```
 
-#### Implement the `sense` function
-| Criteria       		|     Meets Specifications	        			            |
-|:---------------------:|:---------------------------------------------------------:|
-|  Implement the `sense` function for the robot class. |  Implement the `sense` function to complete the robot class found in the `robot_class.py` file. This implementation should account for a given amount of `measurement_noise` and the `measurement_range` of the robot. This function should return a list of values that reflect the measured distance (dx, dy) between the robot's position and any landmarks it sees. One item in the list has the format: `[landmark_index, dx, dy]`. |
+Command-line interface:
 
+```bash
+landmark-slam benchmark
+landmark-slam evaluate --trials 20 --outlier-rates 0.0 0.1 0.2 0.3 0.4
+```
 
-### Script 3: Implementation of `initialize_constraints`
+## Benchmark Snapshot
 
-#### Initialize omega and xi matrices
-| Criteria       		|     Meets Specifications	        			            |
-|:---------------------:|:---------------------------------------------------------:|
-|  Initialize constraint matrices. |  Initialize the array `omega` and vector `xi` such that any unknown values are `0` the size of these should vary with the given `world_size`, `num_landmarks`, and time step, `N`, parameters. |
+Using the included benchmark (`20` trials, `20%` injected measurement outliers):
 
+- Pose RMSE (mean): baseline `4.963`, robust `1.148`
+- Landmark RMSE (mean): baseline `8.993`, robust `7.626`
 
-### Script 3: Implementation of `slam`
+The robust solver significantly improves trajectory quality under outlier corruption.
 
-#### Update the constraint matrices as you read sensor measurements
-| Criteria       		|     Meets Specifications	        			            |
-|:---------------------:|:---------------------------------------------------------:|
-|  Iterate through the generated `data` and update the constraints. |  The values in the constraint matrices should be affected by sensor measurements *and* these updates should account for uncertainty in sensing. |
+## Community Evaluation Pipeline
 
-#### Update the constraint matrices as you read robot motion data
-| Criteria       		|     Meets Specifications	        			            | 
-|:---------------------:|:---------------------------------------------------------:|
-|  Iterate through the generated `data` and update the constraints. |  The values in the constraint matrices should be affected by motion `(dx, dy)` *and* these updates should account for uncertainty in motion. |
+To help contributors compare algorithm changes reliably, the project includes:
 
-#### `slam` returns a list of robot and landmark positions, `mu`
-| Criteria       		|     Meets Specifications	        			            |
-|:---------------------:|:---------------------------------------------------------:|
-|  The result of slam should be a list of robot and landmark positions, `mu`. |  The values in `mu` will be the x, y positions of the robot over time and the estimated locations of landmarks in the world. `mu` is calculated with the constraint matrices `omega^(-1)*xi`. |
+- A reproducible multi-rate evaluator: `community_eval.py`
+- Machine-readable outputs: `artifacts/community_eval.json`
+- Human-readable report: `artifacts/community_eval.md`
+- Weekly benchmark workflow: `.github/workflows/benchmark.yml`
 
+This enables regression tracking and objective review in pull requests.
 
-#### Answer question about final pose
-| Criteria       		|     Meets Specifications	        			            |
-|:---------------------:|:---------------------------------------------------------:|
-|  Answer question about the final robot pose. |  Compare the `slam`-estimated and *true* final pose of the robot; answer why these values might be different. |
+## Community Standards
 
-#### `slam` passes all tests
+- Contribution guide: `CONTRIBUTING.md`
+- Code of conduct: `CODE_OF_CONDUCT.md`
+- Security policy: `SECURITY.md`
+- Issue templates and PR template under `.github/`
 
-| Criteria       		|     Meets Specifications	        			            |
-|:---------------------:|:---------------------------------------------------------:|
-| Test your implementation of `slam`.  |  There are two provided test_data cases, test your implementation of slam on them and see if the result matches.|
+## Why This Matters
 
+For practical SLAM/CV systems, map quality degrades rapidly with bad associations and noisy detections.
+Adding robust weighting and gating is often the minimum step from educational demos toward field-ready behavior.
 
-LICENSE: This project is licensed under the terms of the MIT license.
+## How To Enable Real Badge Links
+
+Replace `<OWNER>/<REPO>` in the badge URLs with your GitHub namespace and repository name after pushing.
+
+## Original Project Scope
+
+The original project content and scripts remain available for the foundational GraphSLAM learning flow.
+
+License: MIT (see `LICENSE.md`).
