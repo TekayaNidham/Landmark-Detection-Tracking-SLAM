@@ -1,0 +1,6 @@
+{
+  "python.defaultInterpreterPath": "C:/Users/Nidham/miniconda3/python.exe",
+  "python.analysis.extraPaths": [
+    "./src"
+  ]
+}

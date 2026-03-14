@@ -1,0 +1,28 @@
+name: Bug report
+description: Report a reproducible bug
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Include commands, seed, and parameters.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and outputs
+      description: Paste traceback or benchmark/test output.
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: OS, Python version
